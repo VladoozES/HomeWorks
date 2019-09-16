@@ -1,0 +1,8 @@
+num = input('Введите номер билета: ')
+razn = 0;
+for i in range(len(num) // 2):
+    razn = razn + int(num[i]) - int(num[-i-1])
+if (razn == 0):
+    print('Счастливчик!')
+else:
+    print('В следующий раз.')
