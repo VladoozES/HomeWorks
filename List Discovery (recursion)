@@ -1,0 +1,11 @@
+def Discovery(l: list):
+    res = []
+    for el in l:
+        if type(el) != list:
+            res.append(el)
+        else:
+            res += Discovery(el)
+    return res
+
+test = [1, 2, [3, [4]], [56, [[[[563]]]], 43]]
+print(Discovery(test))
