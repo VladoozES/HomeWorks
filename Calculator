@@ -1,0 +1,39 @@
+def Calculate(action: str):
+    if action == '+':
+        a = float(input('Введите первое слагаемое: '))
+        b = float(input('Введите второе слагаемое: '))
+        return a + b
+    elif action == '-':
+        a = float(input('Введите уменьшаемое: '))
+        b = float(input('Введите вычитаемое: '))
+        return a - b
+    elif action == '*':
+        a = float(input('Введите первый множитель: '))
+        b = float(input('Введите второй множитель: '))
+        return a * b
+    elif action == '/':
+        a = float(input('Введите делимое: '))
+        b = float(input('Введите делитель: '))
+        return a / b
+    elif action == '^':
+        a = float(input('Введите возводимое в степень: '))
+        b = int(input('Введите степень: '))
+        res = a
+        for i in range(b - 1):
+            res *= a
+        return res
+    elif action == '!':
+        a = int(input('Введите возводимое в факториал: '))
+        if a == 0 or a == 1:
+            return 1
+        else:
+            res = a
+            for i in range(1, a):
+                res *= i
+            return res
+    else:
+        return ('Неверная команда!')
+
+
+while True:
+    print(Calculate(input('Действие: ')))
