@@ -1,0 +1,17 @@
+import random, struct
+
+a = 3 #int(input('a: '))
+b = 33 #int(input('b: '))
+
+l = []
+for i in range(random.randint(5, 15)):
+    l.append(random.randint(a, b))
+
+count = len(l)
+print (l)
+fb = struct.pack('>' + 'i' * count, *l)
+
+
+
+ob = struct.unpack('>' + 'i' * count, fb)
+print(ob)
