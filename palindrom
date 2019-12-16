@@ -1,9 +1,0 @@
-bad_symbols = ',.!+-_ ;:\'"\n\t<>+=@#$%^&*()';
-old = input('Введите строку: ').lower()
-new = ''
-for i in range(len(old)):
-    if old[i] not in bad_symbols:
-        new += old[i]
-print(new)
-print(new[::-1])
-print (new == new[::-1])
