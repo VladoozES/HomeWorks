@@ -1,0 +1,61 @@
+from collections import deque
+import re
+
+
+class MathExpressionException(ValueError):
+    pass
+
+
+def calculator_math_express(expr: str) -> float:
+    work_stack = deque()
+    work_list = []
+    i = 0
+    temp_expr = expr
+    try:
+        while len(temp_expr) > 0:
+            work_element = re.match(r'(\d+(\.\d+)?)|\(|\)|\*|\+|-|/', temp_expr).group(0)
+            temp_expr = temp_expr[len(work_element):]
+            if re.match(r'\d+(\.\d+)?', work_element) != None:
+                work_list.append(float(work_element))
+                if len(work_stack) != 0:
+                    if work_stack[len(work_stack) - 1] == '*' or work_stack[len(work_stack) - 1] == '/':
+                        work_list.append(work_stack.pop())
+            elif work_element == '+' or work_element == '-' or work_element == '(' or work_element == '*' or work_element == '/':
+                if work_element == '+' or work_element == '-':
+                    if len(work_stack) != 0:
+                        if work_stack[len(work_stack) - 1] == '-' or work_stack[len(work_stack) - 1] == '+':
+                            work_list.append(work_stack.pop())
+                work_stack.append(work_element)
+            elif work_element == ')':
+                while work_stack[len(work_stack) - 1] != '(':
+                    work_list.append(work_stack.pop())
+                work_stack.pop()
+                if len(work_stack) != 0:
+                    if work_stack[len(work_stack) - 1] == '*' or work_stack[len(work_stack) - 1] == '/':
+                        work_list.append(work_stack.pop())
+            if len(temp_expr) == 0:
+                while len(work_stack) > 0:
+                    work_list.append(work_stack.pop())
+        temp = ''
+        while len(work_list) > 1:
+            for i in range(len(work_list)):
+                if work_list[i] in ['*', '/', '+', '-']:
+                    if work_list[i] == '*':
+                        temp = work_list[i - 2] * work_list[i - 1]
+                    elif work_list[i] == '/':
+                        temp = work_list[i - 2] / work_list[i - 1]
+                    elif work_list[i] == '+':
+                        temp = work_list[i - 2] + work_list[i - 1]
+                    elif work_list[i] == '-':
+                        temp = work_list[i - 2] - work_list[i - 1]
+                    if len(work_list) > 3:
+                        temp_list = work_list[i+1:]
+                        work_list = work_list[:i - 2]
+                        work_list.append(temp)
+                        work_list += temp_list
+                    else:
+                        work_list = [temp]
+                    break
+        return float(work_list[0])
+    except:
+        raise MathExpressionException(expr)
