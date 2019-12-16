@@ -1,0 +1,40 @@
+class StackException(ValueError):
+    pass
+
+
+class Stack:
+    stack_list = []
+
+    def __init__(self, stack_type):
+        self.stack_list = list()
+        self.stack_type = stack_type
+
+    def __str__(self):
+        return str(self.stack_list)
+
+    def __len__(self):
+        return len(self.stack_list)
+
+    def push(self, value):
+        if not type(value) is self.stack_type and not issubclass(type(value), self.stack_type):
+            raise StackException('Type Error: ', value)
+        self.stack_list.append(value)
+        print(self.stack_list)
+        print('len:', len(self))
+
+    def pop(self):
+        if len(self.stack_list) == 0:
+            raise StackException('Pop from empty stack')
+        res = self.stack_list[-1]
+        self.stack_list = self.stack_list[:len(self.stack_list) - 1]
+        print(self.stack_list)
+        print('len:', len(self))
+        return res
+
+    def clear(self):
+        self.stack_list = list()
+        print(self.stack_list)
+        print(len(self))
+
+    def is_empty(self):
+        return True if len(self.stack_list) == 0 else False
