@@ -1,0 +1,14 @@
+def to_other_system(count_system: int, value: int) -> list:
+    res = []
+    while value > 0:
+        res.append(value % count_system)
+        value = value // count_system
+    return res
+
+
+def is_polyndrom(n: int) -> int:
+    for i in range(2, 37):
+        n_other_system = to_other_system(i, n)
+        if n_other_system == n_other_system[::-1]:
+            return i
+    return 0
