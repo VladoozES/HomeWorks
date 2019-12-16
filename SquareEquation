@@ -1,0 +1,36 @@
+import re, math
+
+
+class SquareEquationException(Exception):
+    pass
+
+
+# 32x^2 + 45x + 5 = 0
+def solve_square_equation(expr: str) -> list:
+    new_expr = expr
+    try:
+        a = int(re.search(r'(\+|-)?\d*', re.search(r'(\+|-)?\d*\*?x\^2', new_expr).group(0)).group(0))
+        new_expr = new_expr.replace(re.search(r'\d*\*?x\^2', new_expr).group(0), '')
+    except:
+        a = 0
+    try:
+        b = int(re.search(r'(\+|-)?\d*', re.search(r'(\+|-)?\d*\*?x', new_expr).group(0)).group(0))
+        new_expr = new_expr.replace(re.search(r'\d*\*?x', new_expr).group(0), '')
+    except:
+        b = 0
+    try:
+        c = int(re.search(r'(\+|-)?\d+', new_expr).group(0))
+    except:
+        c = 0
+    d = b * b - 4 * a * c
+    if a == 0:
+        res =[-c / b]
+    else:
+        try:
+            if ((-b - math.sqrt(d)) / 2 / a == (-b + math.sqrt(d)) / 2 / a):
+                res = [(-b - math.sqrt(d)) / 2 / a]
+            else:
+                res = [(-b - math.sqrt(d)) / 2 / a, (-b + math.sqrt(d)) / 2 / a]
+        except:
+            raise SquareEquationException(expr)
+    return sorted(res)
