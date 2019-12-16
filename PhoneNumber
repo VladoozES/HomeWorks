@@ -1,0 +1,25 @@
+import re
+
+
+class PhoneNumberException(ValueError):
+    pass
+
+
+def prepare_phone_number(phone: str) -> str:
+    if isinstance(phone, int):
+        raise PhoneNumberException(phone)
+    phone = phone.replace(' ', '')
+    t = re.findall(
+        '(\+7|8|7)?(\([9]\d\d\)|[9]\d\d|[-]?\([9]\d\d\) ?[-]|[-][9]\d\d[-])-?(((\d{3})-?(\d{2})-?(\d{2}))|((\d{2})-?(\d{2})-?(\d{3})))',
+        phone)
+    if len(t) != 1:
+        raise PhoneNumberException(phone)
+    i = 0
+    while i < len(phone):
+        if not phone[i].isdigit():
+            phone = phone[:i] + phone[i + 1:]
+            continue
+        i += 1
+    phone = phone[:-11:-1]
+    phone = phone[::-1]
+    return '+7 ({0}) {1}-{2}-{3}'.format(phone[:3], phone[3:6], phone[6:8], phone[8:])
