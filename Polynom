@@ -1,0 +1,102 @@
+import re
+import math
+
+
+class Polynom:
+    def __eq__(self, other):
+        if len(self.polynom_list) != len(other.polynom_list):
+            return False
+        for i in range(len(self.polynom_list)):
+            if self.polynom_list[i] != other.polynom_list[i]:
+                return False
+        return True
+
+    def __len__(self):
+        return len(self.polynom_list) - 1
+
+    def __init__(self, *args):
+        self.polynom_list = [value for value in args]
+
+    def __call__(self, x):
+        res = 0
+        for i in range(len(self.polynom_list)):
+            if i == 0:
+                res = res + self.polynom_list[len(self.polynom_list) - 1]
+            else:
+                res = res + self.polynom_list[len(self.polynom_list) - 1 - i] * (x ** i)
+        return res
+
+    def __str__(self):
+        res = ''
+        for i in range(len(self.polynom_list)):
+            if self.polynom_list[i] == 0:
+                continue
+            if i == 0 or self.polynom_list[i] < 0:
+                delta = str(self.polynom_list[i])
+            else:
+                delta = '+' + str(self.polynom_list[i])
+            if math.fabs(self.polynom_list[i]) == 1 and i != len(self.polynom_list) - 1:
+                delta = re.sub(r'1', '', delta)
+            res += delta
+            if i < len(self.polynom_list) - 1:
+                if len(self.polynom_list) - i - 1 == 1:
+                    res += 'x'
+                else:
+                    res += 'x^{}'.format(len(self.polynom_list) - i - 1)
+        if res[0] == '+':
+            res = res[1:]
+        return res
+
+    def __add__(self, other):
+        if type(other) == Polynom:
+            a = [value for value in self.polynom_list]
+            a.reverse()
+            b = [value for value in other.polynom_list]
+            b.reverse()
+            for i in range(min(len(a), len(b))):
+                if len(a) >= len(b):
+                    a[i] = a[i] + b[i]
+                else:
+                    b[i] = b[i] + a[i]
+            if len(a) >= len(b):
+                a.reverse()
+                for i in range(len(a)):
+                    if a[0] != 0:
+                        break
+                    a = a[1:]
+                res = Polynom(*a)
+            else:
+                b.reverse()
+                for i in range(len(b)):
+                    if b[0] != 0:
+                        break
+                    b = b[1:]
+                res = Polynom(*b)
+            return res
+        if type(other) == float or type(other) == int:
+            res = Polynom(*self.polynom_list)
+            res.polynom_list[len(res.polynom_list) - 1] = res.polynom_list[len(res.polynom_list) - 1] + other
+            return Polynom(*res.polynom_list)
+
+    def __sub__(self, other):
+        if type(other) == Polynom:
+            new_other = Polynom(*[-1 * value for value in other.polynom_list])
+            return self + new_other
+        if type(other) == float or type(other) == int:
+            return self + (-1) * other
+
+    def __mul__(self, other):
+        if type(other) == Polynom:
+            res = Polynom()
+            for i in range(len(self.polynom_list)):
+                temp_list = [0 for i in range(len(self.polynom_list) + len(other.polynom_list) - 1)]
+                for j in range(len(other.polynom_list)):
+                    temp_list[i + j] = self.polynom_list[i] * other.polynom_list[j]
+                temp = Polynom(*temp_list)
+                res += temp
+            return res
+        if type(other) == float or type(other) == int:
+            temp_list = self.polynom_list.copy()
+            for i in range(len(self.polynom_list)):
+                temp_list[i] = temp_list[i] * other
+            return Polynom(*temp_list)
